@@ -1,0 +1,2117 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZMAX - منصة تعلم CSS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2965f1;
+            --primary-dark: #1a4dc4;
+            --accent: #ff6b6b;
+            --success: #4cc9f0;
+            --dark: #1a1a2e;
+            --darker: #0d0d1a;
+            --light: #f8f9fa;
+            --gray: #6c757d;
+            --border-radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Tajawal', sans-serif; 
+        }
+        
+        body { 
+            background: linear-gradient(135deg, var(--darker), var(--dark)); 
+            color: var(--light); 
+            line-height: 1.6; 
+            min-height: 100vh; 
+            padding: 20px; 
+            transition: background 0.5s ease;
+        }
+        
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            position: relative;
+        }
+
+        /* زر التشغيل */
+        .power-switch {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            transition: all 0.8s ease;
+        }
+        
+        .switch {
+            display: block;
+            background-color: black;
+            width: 150px;
+            height: 195px;
+            box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2), 0 0 1px 2px black, inset 0 2px 2px -2px white, inset 0 0 2px 15px #47434c, inset 0 0 2px 22px black;
+            border-radius: 5px;
+            padding: 20px;
+            perspective: 700px;
+            cursor: pointer;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .switch input:checked + .button {
+            transform: translateZ(20px) rotateX(25deg);
+            box-shadow: 0 -10px 20px var(--primary);
+        }
+
+        .switch input:checked + .button .light {
+            animation: flicker 0.2s infinite 0.3s;
+        }
+
+        .switch input:checked + .button .shine {
+            opacity: 1;
+        }
+
+        .switch input:checked + .button .shadow {
+            opacity: 0;
+        }
+
+        .switch .button {
+            display: block;
+            transition: all 0.3s cubic-bezier(1, 0, 1, 1);
+            transform-origin: center center -20px;
+            transform: translateZ(20px) rotateX(-25deg);
+            transform-style: preserve-3d;
+            background-color: #1a4dc4;
+            height: 100%;
+            position: relative;
+            cursor: pointer;
+            background: linear-gradient(#1a4dc4 0%, #0d3aa3 30%, #0d3aa3 70%, #1a4dc4 100%);
+            background-repeat: no-repeat;
+        }
+
+        .switch .button::before {
+            content: "";
+            background: linear-gradient(rgba(255, 255, 255, 0.8) 10%, rgba(255, 255, 255, 0.3) 30%, #0d3aa3 75%, #092a7a) 50% 50%/97% 97%, #1a4dc4;
+            background-repeat: no-repeat;
+            width: 100%;
+            height: 50px;
+            transform-origin: top;
+            transform: rotateX(-90deg);
+            position: absolute;
+            top: 0;
+        }
+
+        .switch .button::after {
+            content: "";
+            background-image: linear-gradient(#0d3aa3, #092a7a);
+            width: 100%;
+            height: 50px;
+            transform-origin: top;
+            transform: translateY(50px) rotateX(-90deg);
+            position: absolute;
+            bottom: 0;
+            box-shadow: 0 50px 8px 0px black, 0 80px 20px 0px rgba(0, 0, 0, 0.5);
+        }
+
+        .switch .light {
+            opacity: 0;
+            animation: light-off 1s;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(#8feaff, var(--primary) 40%, transparent 70%);
+        }
+
+        .switch .dots {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(transparent 30%, rgba(13, 58, 163, 0.7) 70%);
+            background-size: 10px 10px;
+        }
+
+        .switch .characters {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(white, white) 50% 20%/5% 20%, radial-gradient(circle, transparent 50%, white 52%, white 70%, transparent 72%) 50% 80%/33% 25%;
+            background-repeat: no-repeat;
+        }
+
+        .switch .shine {
+            transition: all 0.3s cubic-bezier(1, 0, 1, 1);
+            opacity: 0.3;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(white, transparent 3%) 50% 50%/97% 97%, linear-gradient(rgba(255, 255, 255, 0.5), transparent 50%, transparent 80%, rgba(255, 255, 255, 0.5)) 50% 50%/97% 97%;
+            background-repeat: no-repeat;
+        }
+
+        .switch .shadow {
+            transition: all 0.3s cubic-bezier(1, 0, 1, 1);
+            opacity: 1;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent 70%, rgba(0, 0, 0, 0.8));
+            background-repeat: no-repeat;
+        }
+
+        @keyframes flicker {
+            0% {
+                opacity: 1;
+            }
+
+            80% {
+                opacity: 0.8;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes light-off {
+            0% {
+                opacity: 1;
+            }
+
+            80% {
+                opacity: 0;
+            }
+        }
+
+        /* نافذة اسم المستخدم */
+        .user-name-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .user-name-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .user-name-card h2 {
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+        
+        .user-name-card p {
+            margin-bottom: 20px;
+            color: var(--gray);
+        }
+        
+        .name-input-container {
+            margin: 20px 0;
+        }
+        
+        .name-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 30px;
+            color: white;
+            font-size: 16px;
+            text-align: center;
+            transition: var(--transition);
+        }
+        
+        .name-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(41,101,241,0.2);
+        }
+        
+        .name-submit-btn {
+            background: var(--primary);
+            color: var(--light);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 10px;
+        }
+        
+        .name-submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(41,101,241,0.3);
+        }
+
+        /* شاشة البداية */
+        .start-screen { 
+            display: none; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 80vh; 
+            text-align: center; 
+            padding: 20px; 
+        }
+        
+        .logo { 
+            margin-bottom: 40px; 
+        }
+        
+        .logo i { 
+            font-size: 70px; 
+            color: var(--primary); 
+            margin-bottom: 15px; 
+        }
+        
+        .logo h1 { 
+            font-size: 36px; 
+            background: linear-gradient(to right, var(--primary), var(--accent)); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            margin-bottom: 10px;
+        }
+        
+        .logo p { 
+            font-size: 18px; 
+            color: var(--gray); 
+        }
+        
+        .welcome-card { 
+            background: rgba(255,255,255,0.08); 
+            backdrop-filter: blur(10px); 
+            border-radius: var(--border-radius); 
+            padding: 30px; 
+            width: 100%; 
+            max-width: 500px; 
+            text-align: center; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            margin-bottom: 30px;
+        }
+        
+        .welcome-card h2 { 
+            color: var(--primary); 
+            margin-bottom: 15px; 
+        }
+        
+        .welcome-card p { 
+            margin-bottom: 20px; 
+            color: var(--gray);
+        }
+        
+        .features { 
+            display: flex; 
+            justify-content: center; 
+            gap: 15px; 
+            margin-bottom: 30px; 
+            flex-wrap: wrap;
+        }
+        
+        .feature { 
+            background: rgba(41,101,241,0.1); 
+            padding: 10px 15px; 
+            border-radius: 30px; 
+            font-size: 14px; 
+            color: var(--primary); 
+        }
+        
+        .start-btn { 
+            background: var(--primary); 
+            color: var(--light); 
+            border: none; 
+            padding: 12px 30px; 
+            border-radius: 30px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: var(--transition); 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            margin: 0 auto; 
+        }
+        
+        .start-btn:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 10px 20px rgba(41,101,241,0.3); 
+        }
+
+        /* واجهة التعلم */
+        .learning-interface { 
+            display: none; 
+            min-height: 90vh; 
+            background: rgba(255,255,255,0.05); 
+            backdrop-filter: blur(10px); 
+            border-radius: var(--border-radius); 
+            overflow: hidden; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+        }
+        
+        .header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 20px 30px; 
+            background: rgba(0,0,0,0.3); 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+        }
+        
+        .header h2 { 
+            color: var(--primary); 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        
+        .progress-container { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+        }
+        
+        .progress-bar { 
+            width: 150px; 
+            height: 8px; 
+            background: rgba(255,255,255,0.1); 
+            border-radius: 4px; 
+            overflow: hidden; 
+        }
+        
+        .progress { 
+            height: 100%; 
+            border-radius: 4px; 
+            background: linear-gradient(to right, var(--primary-dark), var(--primary)); 
+            transition: width 0.5s ease; 
+        }
+        
+        .back-btn { 
+            background: rgba(255,255,255,0.1); 
+            border: none; 
+            color: var(--light); 
+            padding: 10px 20px; 
+            border-radius: 30px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            transition: var(--transition);
+        }
+        
+        .back-btn:hover { 
+            background: rgba(255,255,255,0.2); 
+        }
+
+        .content-area { 
+            display: flex; 
+            min-height: calc(90vh - 80px); 
+        }
+        
+        .lessons-sidebar { 
+            width: 300px; 
+            background: rgba(0,0,0,0.3); 
+            border-left: 1px solid rgba(255,255,255,0.1); 
+            padding: 20px; 
+            overflow-y: auto; 
+        }
+        
+        .lessons-sidebar h3 { 
+            margin-bottom: 20px; 
+            color: var(--primary); 
+            padding-bottom: 10px; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+        }
+        
+        .lesson-item { 
+            padding: 15px; 
+            margin-bottom: 10px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: var(--transition); 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            border: 1px solid transparent;
+        }
+        
+        .lesson-item:hover { 
+            background: rgba(255,255,255,0.05); 
+        }
+        
+        .lesson-item.active { 
+            background: rgba(41,101,241,0.15); 
+            border-left: 3px solid var(--primary); 
+        }
+        
+        .lesson-item.completed { 
+            border-color: var(--success); 
+        }
+        
+        .lesson-item.completed .lesson-title { 
+            color: var(--success); 
+        }
+        
+        .lesson-icon { 
+            width: 30px; 
+            height: 30px; 
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            background: rgba(41,101,241,0.2); 
+            color: var(--primary); 
+        }
+        
+        .lesson-info { 
+            flex: 1; 
+        }
+        
+        .lesson-title { 
+            font-weight: 500; 
+        }
+
+        .lesson-content { 
+            flex: 1; 
+            padding: 30px; 
+            overflow-y: auto; 
+        }
+        
+        .lesson-header { 
+            margin-bottom: 30px; 
+        }
+        
+        .lesson-header h3 { 
+            font-size: 24px; 
+            color: var(--primary); 
+            margin-bottom: 10px; 
+        }
+        
+        .lesson-header p { 
+            color: var(--gray); 
+        }
+        
+        .content-section { 
+            background: rgba(255,255,255,0.05); 
+            border-radius: var(--border-radius); 
+            padding: 25px; 
+            margin-bottom: 25px; 
+            border-left: 4px solid var(--primary); 
+        }
+        
+        .content-section h4 { 
+            margin-bottom: 15px; 
+            color: var(--primary); 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        
+        .demo-container { 
+            display: flex; 
+            gap: 20px; 
+            margin-top: 20px; 
+        }
+        
+        .code-editor, .output-container { 
+            flex: 1; 
+            background: #1e1e2e; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .editor-header, .output-header { 
+            background: #2d2d42; 
+            padding: 10px 15px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            color: var(--gray); 
+            font-size: 14px;
+        }
+        
+        .run-btn { 
+            background: var(--primary); 
+            color: var(--light); 
+            border: none; 
+            padding: 5px 15px; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: var(--transition);
+        }
+        
+        .run-btn:hover { 
+            background: var(--primary-dark); 
+        }
+        
+        .code-area { 
+            width: 100%; 
+            min-height: 200px; 
+            background: #1e1e2e; 
+            color: #f8f8f2; 
+            border: none; 
+            padding: 15px; 
+            font-family: 'Courier New', monospace; 
+            font-size: 16px; 
+            resize: vertical; 
+            outline: none; 
+            line-height: 1.5;
+        }
+        
+        .output-content { 
+            padding: 15px; 
+            min-height: 200px; 
+            color: #f8f8f2; 
+            font-family: 'Courier New', monospace; 
+            white-space: pre-wrap; 
+            line-height: 1.5;
+        }
+        
+        .hint-btn { 
+            background: transparent; 
+            border: 1px solid var(--accent); 
+            color: var(--accent); 
+            padding: 8px 15px; 
+            border-radius: 30px; 
+            cursor: pointer; 
+            margin-top: 10px;
+            transition: var(--transition);
+        }
+        
+        .hint-btn:hover { 
+            background: rgba(255,107,107,0.1); 
+        }
+        
+        .hint { 
+            background: rgba(248,150,30,0.1); 
+            border-right: 3px solid var(--accent); 
+            padding: 15px; 
+            border-radius: 0 8px 8px 0; 
+            margin: 15px 0; 
+            display: none; 
+        }
+        
+        .success-message { 
+            background: rgba(76,201,240,0.2); 
+            border-right: 3px solid var(--success); 
+            padding: 15px; 
+            border-radius: 0 8px 8px 0; 
+            margin: 15px 0; 
+            display: none; 
+        }
+
+        .navigation { 
+            display: flex; 
+            justify-content: space-between; 
+            margin-top: 30px; 
+        }
+        
+        .nav-btn { 
+            padding: 12px 25px; 
+            color: white; 
+            border: none; 
+            border-radius: 30px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            transition: var(--transition); 
+            display: flex; 
+            align-items: center; 
+            gap: 8px;
+        }
+        
+        .nav-btn.prev { 
+            background: rgba(255,255,255,0.1); 
+        }
+        
+        .nav-btn.next { 
+            background: var(--primary); 
+            color: var(--light); 
+        }
+        
+        .nav-btn:disabled { 
+            background: var(--gray); 
+            cursor: not-allowed; 
+        }
+        
+        .nav-btn:not(:disabled):hover { 
+            transform: translateY(-2px); 
+        }
+
+        /* شهادة التقدير */
+        .certificate-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .certificate {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            width: 90%;
+            max-width: 800px;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 15px solid var(--primary);
+            overflow: hidden;
+            animation: certificateAppear 1s ease-out;
+        }
+        
+        @keyframes certificateAppear {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .certificate::before, .certificate::after {
+            content: "";
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%232965f1"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>');
+            background-size: contain;
+            opacity: 0.2;
+        }
+        
+        .certificate::before {
+            top: 20px;
+            left: 20px;
+        }
+        
+        .certificate::after {
+            bottom: 20px;
+            right: 20px;
+        }
+        
+        .certificate-header {
+            margin-bottom: 30px;
+        }
+        
+        .certificate-header h2 {
+            font-size: 36px;
+            color: #1a1a2e;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .certificate-header p {
+            font-size: 18px;
+            color: #6c757d;
+        }
+        
+        .certificate-body {
+            margin: 30px 0;
+            padding: 20px;
+            border-top: 2px solid var(--primary);
+            border-bottom: 2px solid var(--primary);
+            position: relative;
+        }
+        
+        .certificate-body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="%232965f1" opacity="0.05"><path d="M50,5 L60,35 L90,35 L65,55 L75,85 L50,65 L25,85 L35,55 L10,35 L40,35 Z"/></svg>');
+            background-size: 80px 80px;
+            background-repeat: repeat;
+        }
+        
+        .certificate-body h3 {
+            font-size: 28px;
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .student-name {
+            font-size: 32px;
+            color: var(--accent);
+            margin: 20px 0;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            position: relative;
+            display: inline-block;
+            padding: 5px 20px;
+            background: linear-gradient(90deg, transparent, rgba(255,107,107,0.1), transparent);
+        }
+        
+        .certificate-details {
+            margin: 20px 0;
+            color: #6c757d;
+            position: relative;
+        }
+        
+        .certificate-footer {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+        
+        .certificate-signature {
+            text-align: center;
+        }
+        
+        .signature-line {
+            width: 200px;
+            height: 1px;
+            background: #1a1a2e;
+            margin: 5px auto;
+        }
+        
+        .certificate-actions {
+            margin-top: 30px;
+        }
+        
+        .download-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            margin: 0 10px;
+        }
+        
+        .download-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .close-certificate {
+            background: #1a1a2e;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+            margin: 0 10px;
+        }
+        
+        .close-certificate:hover {
+            background: #0d0d1a;
+            transform: translateY(-2px);
+        }
+
+        /* تحسينات جديدة */
+        .achievement-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(255,107,107,0.3);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .tips-section {
+            background: rgba(76,201,240,0.1);
+            border-right: 3px solid var(--success);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+        
+        .challenge-section {
+            background: rgba(255,107,107,0.1);
+            border-right: 3px solid var(--accent);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+        
+        .challenge-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: var(--transition);
+        }
+        
+        .challenge-btn:hover {
+            background: rgba(255,107,107,0.8);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 20px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--light);
+            font-weight: bold;
+        }
+
+        /* كود البطاقة التفاعلية */
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+            width: 200px;
+            height: 300px;
+            perspective: 600px;
+            margin: 30px auto;
+        }
+
+        .card-link .card-inner {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            height: 100%;
+            width: 100%;
+            transform-style: preserve-3d;
+            box-shadow: 0 3px 5px 0px rgba(33, 33, 33, 0.6);
+            border-radius: 5px;
+            will-change: transform;
+            transition: all 0.5s;
+        }
+
+        .card-link .card-inner .grid-tile {
+            position: relative;
+            backface-visibility: visible;
+            z-index: 10;
+            transform: translateZ(51px);
+        }
+        
+        .card-link:hover .card-inner .grid-tile {
+            transform: translateZ(100px);
+        }
+
+        .card-link .card-inner:has(.grid-tile:nth-child(1):hover) {
+            transform: rotateX(15deg) rotateY(-15deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(2):hover) {
+            transform: rotateX(15deg) rotateY(-7.5deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(3):hover) {
+            transform: rotateX(15deg) rotateY(0deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(4):hover) {
+            transform: rotateX(15deg) rotateY(7.5deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(5):hover) {
+            transform: rotateX(15deg) rotateY(15deg);
+        }
+
+        .card-link .card-inner:has(.grid-tile:nth-child(6):hover) {
+            transform: rotateX(7.5deg) rotateY(-15deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(7):hover) {
+            transform: rotateX(7.5deg) rotateY(-7.5deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(8):hover) {
+            transform: rotateX(7.5deg) rotateY(0deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(9):hover) {
+            transform: rotateX(7.5deg) rotateY(7.5deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(10):hover) {
+            transform: rotateX(7.5deg) rotateY(15deg);
+        }
+
+        .card-link .card-inner:has(.grid-tile:nth-child(11):hover) {
+            transform: rotateX(0deg) rotateY(-15deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(12):hover) {
+            transform: rotateX(0deg) rotateY(-7.5deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(13):hover) {
+            transform: rotateX(0deg) rotateY(0deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(14):hover) {
+            transform: rotateX(0deg) rotateY(7.5deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(15):hover) {
+            transform: rotateX(0deg) rotateY(15deg);
+        }
+
+        .card-link .card-inner:has(.grid-tile:nth-child(16):hover) {
+            transform: rotateX(-7.5deg) rotateY(-15deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(17):hover) {
+            transform: rotateX(-7.5deg) rotateY(-7.5deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(18):hover) {
+            transform: rotateX(-7.5deg) rotateY(0deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(19):hover) {
+            transform: rotateX(-7.5deg) rotateY(7.5deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(20):hover) {
+            transform: rotateX(-7.5deg) rotateY(15deg);
+        }
+
+        .card-link .card-inner:has(.grid-tile:nth-child(21):hover) {
+            transform: rotateX(-15deg) rotateY(-15deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(22):hover) {
+            transform: rotateX(-15deg) rotateY(-7.5deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(23):hover) {
+            transform: rotateX(-15deg) rotateY(0deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(24):hover) {
+            transform: rotateX(-15deg) rotateY(7.5deg);
+        }
+        .card-link .card-inner:has(.grid-tile:nth-child(25):hover) {
+            transform: rotateX(-15deg) rotateY(15deg);
+        }
+        
+        .card-link input {
+            display: none;
+        }
+
+        .card-link .side {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 1rem;
+            box-sizing: border-box;
+            transform-style: preserve-3d;
+            backface-visibility: hidden;
+            border-radius: 5px;
+            transition: all 0.25s;
+        }
+        .card-link .side * {
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+        }
+
+        .card-link span.h1 {
+            position: absolute;
+            left: 1rem;
+            top: 1rem;
+            margin: 0;
+            font-size: 1.8rem;
+            will-change: left, transform;
+            transition: all 0.5s;
+            z-index: 10;
+        }
+        .card-link:hover span.h1 {
+            left: 50%;
+            margin: 1rem 0;
+            transform: translateZ(20px) translateX(-50%);
+        }
+
+        .card-link p {
+            font-size: 0.7rem;
+            margin-top: 3rem;
+            transition: all 0.25s;
+        }
+        .card-link:hover p {
+            opacity: 0;
+        }
+
+        .card-link span:not(.h1) {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-wrap: nowrap;
+            transition: all 0.5s;
+        }
+        .card-link:hover span:not(.h1) {
+            left: 50%;
+            margin: 1rem 0;
+            transform: translateZ(20px) translateX(-50%);
+        }
+
+        .card-link .side.front {
+            color: floralwhite;
+            background: linear-gradient(to bottom right, #8feaff, var(--primary));
+            box-shadow:
+                0px 0px 0px var(--primary-dark) inset,
+                0px 0px 0px var(--primary-dark) inset,
+                0px 0px 0px var(--primary-dark) inset,
+                0px 0px 0px var(--primary-dark),
+                0px 0px 0px var(--primary-dark),
+                0px 0px 0px var(--primary-dark);
+            z-index: 1;
+        }
+
+        .card-link .side.back {
+            display: none;
+        }
+        
+        .card-link:hover .side.front {
+            box-shadow:
+                0px 0px 1px var(--primary-dark) inset,
+                0px 0px 2px var(--primary-dark) inset,
+                0px 0px 10px var(--primary-dark) inset,
+                0px 0px 40px var(--primary-dark),
+                0px 0px 100px var(--primary-dark),
+                0px 0px 5px var(--primary-dark);
+        }
+
+        .card-link .card-inner .side .side-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 120px;
+            height: 120px;
+            transform: translate(50%, 50%) rotate(-45deg);
+            transition: all 0.5s;
+        }
+        .card-link .card-inner .side.front .side-badge {
+            background: conic-gradient(
+                var(--primary-dark) 0% 12.5%,
+                transparent 12.5% 87.5%,
+                var(--primary-dark) 87.5% 100%
+            );
+        }
+
+        .card-link:hover .card-inner .side .side-badge {
+            opacity: 0;
+        }
+
+        .card-link .card-inner .side .side-icon {
+            position: absolute;
+            bottom: 0.25rem;
+            right: 0.25rem;
+            width: 40px;
+            height: 40px;
+            transition: all 0.5s;
+        }
+
+        .card-link .card-inner .side .side-icon svg {
+            width: 40px;
+            height: 40px;
+            z-index: 2;
+            transition: all 0.5s;
+        }
+
+        .card-link .card-inner .side.front .side-icon svg {
+            stroke: floralwhite;
+            fill: floralwhite;
+        }
+
+        .card-link:hover .card-inner .side .side-icon {
+            bottom: 50%;
+            right: 50%;
+            width: 80px;
+            height: 80px;
+            transform: translate(50%, 50%);
+        }
+        .card-link:hover .card-inner .side .side-icon svg {
+            width: 80px;
+            height: 80px;
+            transform: translateZ(30px);
+            animation: bounce 1.5s ease-in-out infinite both;
+        }
+
+        @keyframes bounce {
+            0% {
+                transform: translateZ(30px) translateY(0px);
+            }
+            50% {
+                transform: translateZ(30px) translateY(10px);
+            }
+            100% {
+                transform: translateZ(30px) translateY(0px);
+            }
+        }
+
+        @media (max-width: 992px) { 
+            .content-area { 
+                flex-direction: column; 
+            } 
+            
+            .lessons-sidebar { 
+                width: 100%; 
+                border-left: none; 
+                border-bottom: 1px solid rgba(255,255,255,0.1); 
+            } 
+            
+            .demo-container { 
+                flex-direction: column; 
+            } 
+        }
+        
+        @media (max-width: 576px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .progress-container {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .progress-bar {
+                flex: 1;
+                margin: 0 10px;
+            }
+            
+            .logo h1 {
+                font-size: 28px;
+            }
+            
+            .welcome-card {
+                padding: 20px;
+            }
+            
+            .user-profile {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            
+            .power-switch {
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            
+            .certificate {
+                padding: 20px;
+            }
+            
+            .certificate-header h2 {
+                font-size: 28px;
+            }
+            
+            .certificate-body h3 {
+                font-size: 22px;
+            }
+            
+            .student-name {
+                font-size: 24px;
+            }
+            
+            .certificate-footer {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- نافذة اسم المستخدم -->
+        <div class="user-name-modal" id="user-name-modal">
+            <div class="user-name-card">
+                <h2><i class="fas fa-user-circle"></i> مرحباً بك في ZMAX</h2>
+                <p>من فضلك أدخل اسمك للبدء في رحلة تعلم CSS</p>
+                
+                <div class="name-input-container">
+                    <input type="text" class="name-input" id="user-name-input" placeholder="اكتب اسمك هنا..." maxlength="20">
+                </div>
+                
+                <button class="name-submit-btn" id="name-submit-btn">
+                    حفظ والبدء <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- زر التشغيل -->
+        <div class="power-switch" id="power-switch">
+            <label class="switch">
+                <input type="checkbox" id="power-toggle">
+                <div class="button">
+                    <div class="light"></div>
+                    <div class="dots"></div>
+                    <div class="characters"></div>
+                    <div class="shine"></div>
+                    <div class="shadow"></div>
+                </div>
+            </label>
+        </div>
+
+        <!-- شاشة البداية -->
+        <div class="start-screen" id="start-screen">
+            <div class="logo">
+                <i class="fas fa-paint-brush"></i>
+                <h1>ZMAX - منصة تعلم CSS من الصفر</h1>
+                <p id="welcome-message">ابدأ رحلتك في تعلم تصميم وتنسيق صفحات الويب الأكثر طلبًا في سوق العمل!</p>
+            </div>
+
+            <div class="welcome-card">
+                <h2 id="personal-welcome">مرحبًا بك في ZMAX</h2>
+                <p>منصة بسيطة ومباشرة لتعلم CSS من الصفر إلى الاحتراف</p>
+                
+                <div class="features">
+                    <div class="feature">8 دروس تفاعلية</div>
+                    <div class="feature">ممارسة مباشرة</div>
+                    <div class="feature">تتبع التقدم</div>
+                    <div class="feature">تمارين عملية</div>
+                </div>
+                
+                <button class="start-btn" id="start-learning">
+                    ابدأ التعلم الآن <i class="fas fa-arrow-left"></i>
+                </button>
+            </div>
+            
+            <!-- بطاقة تفاعلية -->
+            <a href="https://laayad69-art.github.io/html1/" target="_blank" class="card-link">
+                <div class="card-inner">
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    <div class="grid-tile"></div>
+                    
+                    <div class="side front">
+                        <span class="h1">انقر للانتقال</span>
+                        <p>
+                            هذه البطاقة الآن هي رابط مباشر. عند النقر عليها، ستنتقل إلى الموقع الذي حددته.
+                            <br><br>
+                            **الموقع الأصلي:**
+                        </p>
+                        <span>https://laayad69-art.github.io/html1/</span>
+                        <div class="side-badge"></div>
+                        <div class="side-icon">
+                            <svg viewBox="0 0 50 50" width="500" height="500">
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M39 40L25 44L11 40L8 6L42 6C41 17.332031 40 28.667969 39 40 Z M 39.816406 8L10.183594 8L12.871094 38.453125L25 41.921875L37.128906 38.453125 Z M 16.800781 28L20.800781 28L20.898438 30.5L25 31.898438L29.101563 30.5L29.398438 26L20.601563 26L20.398438 22L29.601563 22L29.898438 18L16.101563 18L15.800781 14L34.101563 14L33.601563 22L32.898438 33.5L25 36.101563L17.101563 33.5Z"
+                                    fill="#FFFFFF"
+                                ></path>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <div class="side back" style="display: none;"></div>
+                </div>
+            </a>
+        </div>
+
+        <!-- واجهة التعلم -->
+        <div class="learning-interface" id="learning-interface">
+            <div class="header">
+                <h2><i class="fas fa-graduation-cap"></i> دورة CSS للمبتدئين</h2>
+                <div class="progress-container">
+                    <span id="progress-text">0% مكتمل</span>
+                    <div class="progress-bar">
+                        <div class="progress" id="global-progress" style="width:0%"></div>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-avatar" id="user-avatar">م</div>
+                    </div>
+                    <button class="back-btn" id="back-to-start">
+                        <i class="fas fa-home"></i> الرجوع
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <div class="lessons-sidebar">
+                    <h3>دروس CSS</h3>
+                    <ul class="lessons-list" id="lessons-list"></ul>
+                </div>
+                <div class="lesson-content" id="lesson-content"></div>
+            </div>
+        </div>
+        
+        <!-- شارة الإنجاز -->
+        <div class="achievement-badge" id="achievement-badge">
+            <i class="fas fa-trophy"></i>
+            <span id="achievement-text">تهانينا! لقد أكملت الدرس الأول</span>
+        </div>
+        
+        <!-- شهادة التقدير -->
+        <div class="certificate-overlay" id="certificate-overlay">
+            <div class="certificate">
+                <div class="certificate-header">
+                    <h2>شهادة تقدير</h2>
+                    <p>تُمنح هذه الشهادة تقديراً للجهود المبذولة في إتمام دورة CSS</p>
+                </div>
+                
+                <div class="certificate-body">
+                    <h3>إتمام دورة CSS للمبتدئين</h3>
+                    <p>تُمنح هذه الشهادة إلى:</p>
+                    <div class="student-name" id="certificate-name">المتعلم المتميز</div>
+                    <p>تقديراً لاجتهاده وإتمامه بنجاح دورة CSS الأساسية</p>
+                    
+                    <div class="certificate-details">
+                        <p>تم إكمال جميع الدروس والمهام التفاعلية بنجاح</p>
+                        <p>تاريخ الإتمام: <span id="certificate-date"></span></p>
+                    </div>
+                </div>
+                
+                <div class="certificate-footer">
+                    <div class="certificate-signature">
+                        <div class="signature-line"></div>
+                        <p>مدير منصة ZMAX</p>
+                    </div>
+                    
+                    <div class="certificate-signature">
+                        <div class="signature-line"></div>
+                        <p>مشرف الدورة</p>
+                    </div>
+                </div>
+                
+                <div class="certificate-actions">
+                    <button class="download-btn" id="download-certificate">
+                        <i class="fas fa-download"></i> تحميل الشهادة
+                    </button>
+                    <button class="close-certificate" id="close-certificate">
+                        <i class="fas fa-times"></i> إغلاق
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const cssCourse = {
+            title: "CSS", 
+            progress: 0,
+            userName: "",
+            lessons: [
+                { 
+                    id: 1, 
+                    title: "مدخل إلى CSS", 
+                    completed: false,
+                    content: { 
+                        title: "ما هي CSS؟", 
+                        description: "تعرف على لغة تصميم الويب الأولى عالميًا!",
+                        explanation: `
+                            <h4><i class="fas fa-info-circle"></i> ما هي CSS؟</h4>
+                            <p>لغة تنسيق صفحات الويب التي تتحكم في المظهر البصري للمواقع. تُستخدم في 100% من مواقع الإنترنت!</p>
+                            <p>باستخدام CSS يمكنك:</p>
+                            <ul>
+                                <li>تغيير ألوان النصوص والخلفيات</li>
+                                <li>التحكم في تخطيط الصفحة</li>
+                                <li>إضافة تأثيرات حركية</li>
+                                <li>جعل التصميم متجاوباً مع جميع الشاشات</li>
+                            </ul>
+                            
+                            <div class="tips-section">
+                                <h4><i class="fas fa-lightbulb"></i> نصائح للمبتدئين</h4>
+                                <p>ابدأ بالأساسيات ثم تقدم إلى المواضيع المتقدمة. الممارسة هي المفتاح!</p>
+                            </div>
+                        `,
+                        interactive: `body {
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #2965f1;
+  text-align: center;
+}
+
+p {
+  color: #333;
+  line-height: 1.6;
+}`,
+                        exercise: `<p>غيّر لون الخلفية ولون النص وطريقة محاذاة النص!</p>`,
+                        hint: 'استخدم background-color و color و text-align' 
+                    }
+                },
+                { 
+                    id: 2, 
+                    title: "الخصائص الأساسية", 
+                    completed: false,
+                    content: { 
+                        title: "الخصائص الأساسية في CSS", 
+                        explanation: `
+                            <h4><i class="fas fa-cog"></i> الخصائص الأساسية</h4>
+                            <p>أهم الخصائص التي تحتاجها لبدء تصميم صفحات الويب:</p>
+                            <ul>
+                                <li>color - لون النص</li>
+                                <li>background-color - لون الخلفية</li>
+                                <li>font-size - حجم الخط</li>
+                                <li>font-family - نوع الخط</li>
+                                <li>margin - المسافة الخارجية</li>
+                                <li>padding - المسافة الداخلية</li>
+                                <li>border - الحدود</li>
+                            </ul>
+                            
+                            <div class="tips-section">
+                                <h4><i class="fas fa-lightbulb"></i> تذكر</h4>
+                                <p>استخدم ألوان متناسقة وأحجام خطوط مناسبة لتحسين تجربة المستخدم.</p>
+                            </div>
+                        `,
+                        interactive: `.box {
+  width: 200px;
+  height: 100px;
+  background-color: #2965f1;
+  color: white;
+  font-size: 18px;
+  margin: 20px;
+  padding: 15px;
+  border: 2px solid #1a4dc4;
+  border-radius: 8px;
+}`,
+                        exercise: `<p>أنشئ صندوقًا بألوان وخصائص مختلفة.</p>`,
+                        hint: 'استخدم width و height و background-color و padding' 
+                    }
+                },
+                { 
+                    id: 3, 
+                    title: "التنسيق والنصوص", 
+                    completed: false,
+                    content: { 
+                        title: "تنسيق النصوص", 
+                        explanation: `
+                            <h4><i class="fas fa-font"></i> تنسيق النصوص</h4>
+                            <p>خصائص تنسيق النصوص تجعل المحتوى أكثر جاذبية:</p>
+                            <ul>
+                                <li>text-align - محاذاة النص</li>
+                                <li>line-height - ارتفاع السطر</li>
+                                <li>text-decoration - تزيين النص</li>
+                                <li>font-weight - سماكة الخط</li>
+                                <li>text-transform - تحويل النص</li>
+                                <li>letter-spacing - تباعد الحروف</li>
+                            </ul>
+                            
+                            <div class="challenge-section">
+                                <h4><i class="fas fa-puzzle-piece"></i> تحدي سريع</h4>
+                                <p>اكتب كود يجعل النص مائل ومتحرك عند التمرير.</p>
+                                <button class="challenge-btn" onclick="showChallengeSolution(1)">إظهار الحل</button>
+                                <div id="challenge-solution-1" style="display:none; margin-top:10px;">
+                                    <code>h1 {<br>  font-style: italic;<br>  animation: move 2s infinite;<br>}<br><br>@keyframes move {<br>  0% { transform: translateX(0); }<br>  50% { transform: translateX(20px); }<br>  100% { transform: translateX(0); }<br>}</code>
+                                </div>
+                            </div>
+                        `,
+                        interactive: `h1 {
+  text-align: center;
+  font-family: 'Arial', sans-serif;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+p {
+  line-height: 1.8;
+  text-align: justify;
+}`,
+                        exercise: `<p>أنشئ تنسيق نصي باستخدام خط مختلف وارتفاع سطر مختلف.</p>`,
+                        hint: 'استخدم font-family و line-height' 
+                    }
+                },
+                { 
+                    id: 4, 
+                    title: "نموذج الصندوق (Box Model)", 
+                    completed: false,
+                    content: { 
+                        title: "فهم نموذج الصندوق",
+                        explanation: `
+                            <h4><i class="fas fa-box"></i> نموذج الصندوق</h4>
+                            <p>كل عنصر في HTML هو صندوق يتكون من:</p>
+                            <pre>المحتوى -> padding -> border -> margin</pre>
+                            <p>خصائص مهمة:</p>
+                            <ul>
+                                <li>width - عرض المحتوى</li>
+                                <li>height - ارتفاع المحتوى</li>
+                                <li>padding - المساحة الداخلية</li>
+                                <li>border - الحدود</li>
+                                <li>margin - المساحة الخارجية</li>
+                                <li>box-sizing - تحديد كيفية حساب الأبعاد</li>
+                            </ul>
+                            
+                            <div class="tips-section">
+                                <h4><i class="fas fa-lightbulb"></i> نصائح للمبتدئين</h4>
+                                <p>استخدم box-sizing: border-box لجعل حساب الأبعاد أسهل.</p>
+                            </div>
+                        `,
+                        interactive: `.box {
+  width: 200px;
+  height: 100px;
+  padding: 20px;
+  border: 5px solid #2965f1;
+  margin: 30px;
+  box-sizing: border-box;
+  background-color: #f0f0f0;
+}`,
+                        exercise: `<p>أنشئ صندوقين بمسافات داخلية وخارجية مختلفة.</p>`,
+                        hint: 'استخدم padding و margin بقيم مختلفة' 
+                    }
+                },
+                { 
+                    id: 5, 
+                    title: "Flexbox", 
+                    completed: false,
+                    content: { 
+                        title: "التخطيط باستخدام Flexbox",
+                        explanation: `
+                            <h4><i class="fas fa-th"></i> Flexbox</h4>
+                            <p>طريقة حديثة لإنشاء تخطيطات مرنة ومتجاوبة:</p>
+                            <pre>.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}</pre>
+                            <p>خصائص الحاوية:</p>
+                            <ul>
+                                <li>display: flex - تفعيل Flexbox</li>
+                                <li>justify-content - المحاذاة الأفقية</li>
+                                <li>align-items - المحاذاة العمودية</li>
+                                <li>flex-direction - اتجاه العناصر</li>
+                                <li>flex-wrap - التفاف العناصر</li>
+                            </ul>
+                            
+                            <div class="challenge-section">
+                                <h4><i class="fas fa-puzzle-piece"></i> تحدي سريع</h4>
+                                <p>أنشئ قائمة أفقية باستخدام Flexbox.</p>
+                                <button class="challenge-btn" onclick="showChallengeSolution(2)">إظهار الحل</button>
+                                <div id="challenge-solution-2" style="display:none; margin-top:10px;">
+                                    <code>.nav {<br>  display: flex;<br>  justify-content: space-around;<br>  list-style: none;<br>}<br><br>.nav li {<br>  padding: 10px 20px;<br>}</code>
+                                </div>
+                            </div>
+                        `,
+                        interactive: `.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 200px;
+  background-color: #f0f0f0;
+}
+
+.item {
+  width: 80px;
+  height: 80px;
+  background-color: #2965f1;
+  margin: 10px;
+}`,
+                        exercise: `<p>أنشئ تخطيط Flexbox بثلاثة عناصر بمحاذاة مختلفة.</p>`,
+                        hint: 'استخدم display: flex مع justify-content و align-items' 
+                    }
+                },
+                { 
+                    id: 6, 
+                    title: "CSS Grid", 
+                    completed: false,
+                    content: { 
+                        title: "التخطيط ثنائي الأبعاد",
+                        explanation: `
+                            <h4><i class="fas fa-th-large"></i> CSS Grid</h4>
+                            <p>نظام تخطيط قوي ثنائي الأبعاد:</p>
+                            <pre>.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 10px;
+}</pre>
+                            <p>خصائص الحاوية:</p>
+                            <ul>
+                                <li>display: grid - تفعيل Grid</li>
+                                <li>grid-template-columns - تعريف الأعمدة</li>
+                                <li>grid-template-rows - تعريف الصفوف</li>
+                                <li>grid-gap - المسافة بين الخلايا</li>
+                                <li>grid-template-areas - تعريف مناطق التخطيط</li>
+                            </ul>
+                        `,
+                        interactive: `.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 100px 100px;
+  grid-gap: 10px;
+}
+
+.item {
+  background-color: #2965f1;
+  padding: 20px;
+  text-align: center;
+  color: white;
+}`,
+                        exercise: `<p>أنشئ تخطيط Grid بعمودين وثلاثة صفوف.</p>`,
+                        hint: 'استخدم grid-template-columns و grid-template-rows' 
+                    }
+                },
+                { 
+                    id: 7, 
+                    title: "التصميم المتجاوب", 
+                    completed: false,
+                    content: { 
+                        title: "جعل التصميم متجاوباً",
+                        explanation: `
+                            <h4><i class="fas fa-mobile-alt"></i> التصميم المتجاوب</h4>
+                            <p>جعل التصميم يعمل على جميع أحجام الشاشات:</p>
+                            <pre>@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+}</pre>
+                            <p>نقاط التوقف الشائعة:</p>
+                            <ul>
+                                <li>الهواتف: 576px</li>
+                                <li>الأجهزة اللوحية: 768px</li>
+                                <li>أجهزة الكمبيوتر المحمولة: 992px</li>
+                                <li>أجهزة الكمبيوتر المكتبية: 1200px</li>
+                            </ul>
+                            
+                            <div class="tips-section">
+                                <h4><i class="fas fa-lightbulb"></i> نصائح للمبتدئين</h4>
+                                <p>ابدأ بتصميم للهواتف أولاً ثم تقدم إلى الشاشات الأكبر.</p>
+                            </div>
+                        `,
+                        interactive: `.container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.item {
+  width: 25%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .item {
+    width: 50%;
+  }
+}
+
+@media (max-width: 576px) {
+  .item {
+    width: 100%;
+  }
+}`,
+                        exercise: `<p>أنشئ تصميمًا متجاوبًا يغير عدد الأعمدة حسب حجم الشاشة.</p>`,
+                        hint: 'استخدم @media queries مع نقاط توقف مختلفة' 
+                    }
+                },
+                { 
+                    id: 8, 
+                    title: "التحويلات والحركات", 
+                    completed: false,
+                    content: { 
+                        title: "إضافة الحركة للتصميم",
+                        explanation: `
+                            <h4><i class="fas fa-magic"></i> التحويلات والحركات</h4>
+                            <p>إضافة تأثيرات حركية تجعل التصميم حيويًا:</p>
+                            <pre>.button {
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  transform: scale(1.1);
+}</pre>
+                            <p>خصائص الحركة:</p>
+                            <ul>
+                                <li>transition - التحولات السلسة</li>
+                                <li>transform - التحويلات (تدوير، تكبير، إلخ)</li>
+                                <li>animation - الحركات المعقدة</li>
+                                <li>@keyframes - تعريف الحركات المخصصة</li>
+                            </ul>
+                            
+                            <div class="challenge-section">
+                                <h4><i class="fas fa-puzzle-piece"></i> تحدي سريع</h4>
+                                <p>أنشئ زرًا يتغير لونه ويتحرك عند التمرير.</p>
+                                <button class="challenge-btn" onclick="showChallengeSolution(3)">إظهار الحل</button>
+                                <div id="challenge-solution-3" style="display:none; margin-top:10px;">
+                                    <code>.btn {<br>  background-color: #2965f1;<br>  transition: all 0.3s ease;<br>}<br><br>.btn:hover {<br>  background-color: #ff6b6b;<br>  transform: translateY(-5px);<br>}</code>
+                                </div>
+                            </div>
+                        `,
+                        interactive: `.box {
+  width: 100px;
+  height: 100px;
+  background-color: #2965f1;
+  transition: all 0.5s ease;
+}
+
+.box:hover {
+  transform: rotate(45deg) scale(1.2);
+  background-color: #ff6b6b;
+}`,
+                        exercise: `<p>أنشئ تأثير حركي لعنصر عند التمرير فوقه.</p>`,
+                        hint: 'استخدم :hover مع transform و transition' 
+                    }
+                }
+            ]
+        };
+
+        // العناصر
+        const userNameModal = document.getElementById('user-name-modal');
+        const userNameInput = document.getElementById('user-name-input');
+        const nameSubmitBtn = document.getElementById('name-submit-btn');
+        const powerSwitch = document.getElementById('power-switch');
+        const powerToggle = document.getElementById('power-toggle');
+        const startScreen = document.getElementById('start-screen');
+        const learningInterface = document.getElementById('learning-interface');
+        const progressEl = document.getElementById('global-progress');
+        const progressTextEl = document.getElementById('progress-text');
+        const lessonsList = document.getElementById('lessons-list');
+        const lessonContent = document.getElementById('lesson-content');
+        const achievementBadge = document.getElementById('achievement-badge');
+        const achievementText = document.getElementById('achievement-text');
+        const userAvatar = document.getElementById('user-avatar');
+        const welcomeMessage = document.getElementById('welcome-message');
+        const personalWelcome = document.getElementById('personal-welcome');
+        const certificateOverlay = document.getElementById('certificate-overlay');
+        const certificateName = document.getElementById('certificate-name');
+        const certificateDate = document.getElementById('certificate-date');
+        const downloadCertificateBtn = document.getElementById('download-certificate');
+        const closeCertificateBtn = document.getElementById('close-certificate');
+
+        let currentLesson = 0;
+        let isPoweredOn = false;
+
+        // عند تحميل الصفحة، تحقق إذا كان اسم المستخدم محفوظًا
+        window.addEventListener('DOMContentLoaded', () => {
+            loadProgress();
+            
+            // إذا لم يكن هناك اسم مستخدم محفوظ، عرض نافذة الاسم
+            if (!cssCourse.userName) {
+                userNameModal.style.display = 'flex';
+            }
+        });
+
+        // حفظ اسم المستخدم
+        nameSubmitBtn.addEventListener('click', saveUserName);
+        userNameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                saveUserName();
+            }
+        });
+
+        function saveUserName() {
+            const name = userNameInput.value.trim();
+            if (name) {
+                cssCourse.userName = name;
+                saveProgress();
+                userNameModal.style.display = 'none';
+                updateUserDisplay();
+                updateWelcomeMessage();
+            } else {
+                userNameInput.focus();
+            }
+        }
+
+        // التحكم في زر التشغيل
+        powerToggle.addEventListener('change', function() {
+            if (this.checked && !isPoweredOn) {
+                // تشغيل النظام
+                isPoweredOn = true;
+                
+                // إخفاء زر التشغيل تماماً بعد التأثير
+                setTimeout(() => {
+                    powerSwitch.style.display = 'none';
+                }, 800);
+                
+                // تأخير بسيط ثم إظهار شاشة البداية
+                setTimeout(() => {
+                    startScreen.style.display = 'flex';
+                    document.body.style.background = 'linear-gradient(135deg, var(--darker), var(--dark))';
+                }, 800);
+            }
+        });
+
+        // تحميل التقدم من localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('zmaxProgress');
+            if (saved) {
+                const data = JSON.parse(saved);
+                cssCourse.progress = data.progress || 0;
+                cssCourse.userName = data.userName || "";
+                cssCourse.lessons.forEach((l,i) => {
+                    l.completed = data.lessons[i]?.completed || false;
+                });
+            }
+            updateUserDisplay();
+            updateWelcomeMessage();
+        }
+
+        // حفظ التقدم
+        function saveProgress() {
+            localStorage.setItem('zmaxProgress', JSON.stringify({
+                progress: cssCourse.progress, 
+                userName: cssCourse.userName,
+                lessons: cssCourse.lessons.map(l=>({completed:l.completed}))
+            }));
+        }
+
+        // تحديث رسالة الترحيب
+        function updateWelcomeMessage() {
+            if (cssCourse.userName) {
+                welcomeMessage.textContent = `مرحباً ${cssCourse.userName}! ابدأ رحلتك في تعلم تصميم وتنسيق صفحات الويب الأكثر طلبًا في سوق العمل!`;
+                personalWelcome.textContent = `مرحباً ${cssCourse.userName} في ZMAX`;
+            }
+        }
+
+        // بدء التطبيق
+        document.getElementById('start-learning').onclick = startLearning;
+
+        function startLearning() {
+            // إذا لم يكن هناك اسم مستخدم، اطلبه أولاً
+            if (!cssCourse.userName) {
+                userNameModal.style.display = 'flex';
+                return;
+            }
+            
+            startScreen.style.display = 'none';
+            learningInterface.style.display = 'block';
+            renderLessons();
+            showLesson(0);
+            updateProgressBar();
+        }
+
+        document.getElementById('back-to-start').onclick = () => {
+            learningInterface.style.display = 'none';
+            startScreen.style.display = 'flex';
+        };
+
+        function renderLessons() {
+            lessonsList.innerHTML = '';
+            cssCourse.lessons.forEach((lesson, i) => {
+                const li = document.createElement('li');
+                li.className = `lesson-item ${lesson.completed?'completed':''} ${i===currentLesson?'active':''}`;
+                li.innerHTML = `
+                    <div class="lesson-icon"><i class="fas ${lesson.completed?'fa-check':'fa-play'}"></i></div>
+                    <div class="lesson-info">
+                        <div class="lesson-title">${lesson.title}</div>
+                    </div>
+                `;
+                li.onclick = () => { currentLesson = i; renderLessons(); showLesson(i); };
+                lessonsList.appendChild(li);
+            });
+        }
+
+        function showLesson(idx) {
+            currentLesson = idx;
+            const lesson = cssCourse.lessons[idx];
+            
+            lessonContent.innerHTML = `
+                <div class="lesson-header">
+                    <h3>${lesson.content.title || lesson.title}</h3>
+                    <p>${lesson.content.description || ''}</p>
+                </div>
+                
+                <div class="content-section">
+                    ${lesson.content.explanation}
+                </div>
+                
+                <div class="content-section">
+                    <h4><i class="fas fa-code"></i> جرب بنفسك</h4>
+                    <div class="demo-container">
+                        <div class="code-editor">
+                            <div class="editor-header">
+                                <span>محرر الكود</span>
+                                <button class="run-btn" onclick="runCode(${idx+1})">تشغيل</button>
+                            </div>
+                            <textarea class="code-area" id="code-${idx+1}">${lesson.content.interactive}</textarea>
+                        </div>
+                        <div class="output-container">
+                            <div class="output-header">الناتج</div>
+                            <div class="output-content" id="output-${idx+1}"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="content-section">
+                    <h4><i class="fas fa-tasks"></i> تمرين عملي</h4>
+                    ${lesson.content.exercise}
+                    <button class="hint-btn" onclick="this.nextElementSibling.style.display='block'">إظهار التلميح</button>
+                    <div class="hint">${lesson.content.hint || 'لا يوجد تلميح لهذا الدرس'}</div>
+                    <div class="success-message">ممتاز! لقد أكملت الدرس بنجاح</div>
+                </div>
+                
+                <div class="navigation">
+                    <button class="nav-btn prev" ${idx===0?'disabled':''} onclick="showLesson(${idx-1})">
+                        <i class="fas fa-arrow-right"></i> الدرس السابق
+                    </button>
+                    <button class="nav-btn next" ${idx===cssCourse.lessons.length-1?'disabled':''} onclick="showLesson(${idx+1})">
+                        الدرس التالي <i class="fas fa-arrow-left"></i>
+                    </button>
+                </div>
+            `;
+
+            // إكمال الدرس عند الكتابة أو الضغط على تشغيل
+            const textarea = document.getElementById(`code-${idx+1}`);
+            if (textarea) {
+                textarea.oninput = () => markCompleted(idx);
+            }
+            renderLessons();
+        }
+
+        window.runCode = function(id) {
+            const code = document.getElementById('code-'+id).value;
+            const output = document.getElementById('output-'+id);
+            
+            // إنشاء عنصر style جديد وإضافته إلى head
+            const styleId = 'dynamic-style-' + id;
+            let styleElement = document.getElementById(styleId);
+            
+            if (!styleElement) {
+                styleElement = document.createElement('style');
+                styleElement.id = styleId;
+                document.head.appendChild(styleElement);
+            }
+            
+            styleElement.textContent = code;
+            
+            // إنشاء HTML لعرض النتيجة
+            output.innerHTML = `
+                <div style="padding: 20px; background: white; color: black; border-radius: 5px;">
+                    <h3 style="color: #2965f1;">نتيجة CSS:</h3>
+                    <div class="demo-element" style="margin-top: 15px;">
+                        <h1>عنوان تجريبي</h1>
+                        <p>هذا نص تجريبي لاختبار تأثير CSS.</p>
+                        <div class="box">صندوق تجريبي</div>
+                    </div>
+                </div>
+            `;
+            
+            markCompleted(currentLesson);
+            
+            // إظهار رسالة النجاح
+            const successMsg = document.querySelector('.success-message');
+            if (successMsg) successMsg.style.display = 'block';
+        };
+
+        function markCompleted(idx) {
+            if (!cssCourse.lessons[idx].completed) {
+                cssCourse.lessons[idx].completed = true;
+                updateProgressBar();
+                saveProgress();
+                renderLessons();
+                showAchievement(idx);
+                
+                // التحقق من إكمال جميع الدروس
+                if (cssCourse.lessons.every(l => l.completed)) {
+                    setTimeout(showCertificate, 1000);
+                }
+            }
+        }
+
+        function updateProgressBar() {
+            const completed = cssCourse.lessons.filter(l => l.completed).length;
+            const percent = Math.round((completed / cssCourse.lessons.length) * 100);
+            cssCourse.progress = percent;
+            progressEl.style.width = percent + '%';
+            progressTextEl.textContent = percent + '% مكتمل';
+        }
+
+        function showAchievement(lessonIndex) {
+            const lessonTitles = [
+                "أول خطوة في CSS!",
+                "إتقان الخصائص الأساسية",
+                "التحكم في تنسيق النصوص",
+                "فهم نموذج الصندوق",
+                "إتقان تخطيط Flexbox",
+                "بناء تخطيطات Grid",
+                "تصميم متجاوب لجميع الشاشات",
+                "إضافة تأثيرات حركية رائعة"
+            ];
+            
+            achievementText.textContent = `تهانينا! لقد أكملت "${cssCourse.lessons[lessonIndex].title}" - ${lessonTitles[lessonIndex]}`;
+            achievementBadge.style.display = 'flex';
+            
+            setTimeout(() => {
+                achievementBadge.style.display = 'none';
+            }, 5000);
+        }
+
+        function showCertificate() {
+            certificateName.textContent = cssCourse.userName;
+            certificateDate.textContent = new Date().toLocaleDateString('ar-SA');
+            certificateOverlay.style.display = 'flex';
+        }
+
+        function updateUserDisplay() {
+            if (cssCourse.userName) {
+                userAvatar.textContent = cssCourse.userName.charAt(0);
+            }
+        }
+
+        window.showChallengeSolution = function(challengeId) {
+            const solutionEl = document.getElementById(`challenge-solution-${challengeId}`);
+            solutionEl.style.display = solutionEl.style.display === 'none' ? 'block' : 'none';
+        };
+
+        // أحداث الشهادة
+        closeCertificateBtn.onclick = () => {
+            certificateOverlay.style.display = 'none';
+        };
+
+        downloadCertificateBtn.onclick = () => {
+            alert('في تطبيق حقيقي، ستتمكن من تحميل الشهادة كملف PDF');
+        };
+
+        // تهيئة
+        updateProgressBar();
+    </script>
+</body>
+</html>
